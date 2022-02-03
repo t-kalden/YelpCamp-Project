@@ -12,6 +12,7 @@ db.once("open", () => {
 })
 
 const app = express();
+app.use(express.urlencoded({ extended : true }));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
@@ -20,10 +21,20 @@ app.get('/', (req,res) => {
     res.render('home');
 })
 
-//index page - display ALL campground C(R)UD
+//index page - display ALL campground C(Read)UD
 app.get('/campgrounds', async (req,res) => {
     const campgrounds = await Campground.find();
     res.render('campgrounds/index', {campgrounds});
+})
+
+//route to form to add new campground to database (Create)RUD
+app.get('/campgrounds/new', (req,res) => {
+    res.render('campgrounds/new');
+})
+app.post('/campgrounds', async (req,res) => {
+    const campground = new Campground(req.body.campground);
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
 })
 
 //show page - showing details of campgrounds
