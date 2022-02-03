@@ -1,5 +1,4 @@
 const express = require('express');
-const app = express();
 const path = require('path');
 const Campground = require('./models/campground');
 
@@ -11,6 +10,8 @@ db.on("err", console.error.bind(console, "CONNECTION ERROR: "));
 db.once("open", () => {
     console.log("CONNECTED TO DATABASE");
 })
+
+const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
