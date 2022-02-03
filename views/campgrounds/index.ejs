@@ -9,12 +9,15 @@
 <body>
 
     <h1>All Campgrounds</h1>
+    <div>
+        <a href="/campgrounds/new">Add Campground</a>
+    </div>
     <ul>
         <!-- LOOP OVER CAMPGROUNDS PASSED IN FROM app.js TO DISPLAY -->
         <% for(let campground of campgrounds) {%> 
             <li><a href="/campgrounds/<%= campground._id %>"><%= campground.title %></a></li>
         <% } %> 
     </ul>
-
+    
 </body>
 </html>
