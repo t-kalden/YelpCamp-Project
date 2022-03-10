@@ -44,7 +44,6 @@ app.get('/campgrounds/new', catchAsync((req,res, next) => {
 }))
 
 const validateCampground = (req,res,next) => {
-    
     const { error } = campgroundSchema.validate(req.body);
     if(error) {
         const msg = error.details.map(el => el.message).join(',');
@@ -57,38 +56,30 @@ app.post('/campgrounds', validateCampground, catchAsync(async (req,res, next) =>
         const campground = new Campground(req.body.campground);
         await campground.save();
         res.redirect(`/campgrounds/${campground._id}`);
-        next();
 }))
 
 //route to for to edit existing campgrounds and update to database CR(Update)D 
-app.get('/campgrounds/:id/edit',  catchAsync(async (req, res, next) => {
+app.get('/campgrounds/:id/edit',  catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render('campgrounds/edit', { campground });
-    next();
-
 }))
 app.put('/campgrounds/:id', validateCampground, catchAsync(async (req,res, next) => {
     const {id} = req.params;
     const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground});
     res.redirect(`/campgrounds/${campground._id}`);
     next();
-
 }))
 
-app.delete('/campgrounds/:id', catchAsync( async (req,res, next) => {
+app.delete('/campgrounds/:id', catchAsync( async (req,res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect("/campgrounds");
-    next();
-
 }))
 
 //show page - showing details of campgrounds
-app.get('/campgrounds/:id',  catchAsync( async(req, res, next) => {
+app.get('/campgrounds/:id',  catchAsync( async(req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render('campgrounds/show', {campground});
-    next();
-
 }))
 
 
