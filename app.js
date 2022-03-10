@@ -6,8 +6,10 @@ const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const { campgroundSchema } = require('./schemas.js');
+const Review = require('./models/review');
 
 const mongoose = require('mongoose');
+const review = require('./models/review');
 mongoose.connect('mongodb://localhost:27017/yelp-camp');
 
 const db = mongoose.connection;
@@ -56,7 +58,7 @@ app.post('/campgrounds', validateCampground, catchAsync(async (req,res, next) =>
         const campground = new Campground(req.body.campground);
         await campground.save();
         res.redirect(`/campgrounds/${campground._id}`);
-}))
+})) 
 
 //route to for to edit existing campgrounds and update to database CR(Update)D 
 app.get('/campgrounds/:id/edit',  catchAsync(async (req, res) => {
@@ -74,6 +76,15 @@ app.delete('/campgrounds/:id', catchAsync( async (req,res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect("/campgrounds");
+}))
+
+app.post('/campgrounds/:id/reviews', catchAsync(async(req,res) => {
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
 }))
 
 //show page - showing details of campgrounds
