@@ -36,6 +36,10 @@ router.post('/', validateCampground, catchAsync(async (req,res, next) => {
 //route to for to edit existing campgrounds and update to database CR(Update)D 
 router.get('/:id/edit',  catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
+    if(!campground) {
+        req.flash('error', "Uh-oh, cannot find that campground"); 
+        return res.redirect("/campgrounds");
+    }
     res.render('campgrounds/edit', { campground });
 }))
 router.put('/:id', validateCampground, catchAsync(async (req,res, next) => {
@@ -56,6 +60,10 @@ router.delete('/:id', catchAsync( async (req,res) => {
 //show page - showing details of campgrounds
 router.get('/:id',  catchAsync( async(req, res) => {
     const campground = await Campground.findById(req.params.id).populate('reviews');
+    if(!campground) {
+        req.flash('error', "Uh-oh, cannot find that campground"); 
+        return res.redirect("/campgrounds");
+    }
     res.render('campgrounds/show', { campground });
 }))
 
