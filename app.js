@@ -8,6 +8,8 @@ const ExpressError = require('./utils/ExpressError');
 const { campgroundSchema, reviewSchema } = require('./schemas.js');
 const Review = require('./models/review');
 
+const campgrounds = require('./routes/campgrounds')
+
 const mongoose = require('mongoose');
 const review = require('./models/review');
 mongoose.connect('mongodb://localhost:27017/yelp-camp');
@@ -34,25 +36,6 @@ app.get('/', (req,res) => {
     res.render('home');
 })
 
-//index page - display ALL campground C(Read)UD
-app.get('/campgrounds', async (req,res) => {
-    const campgrounds = await Campground.find();
-    res.render('campgrounds/index', {campgrounds});
-})
-
-//route to form to add new campground to database (Create)RUD
-app.get('/campgrounds/new', catchAsync((req,res, next) => {
-    res.render('campgrounds/new');
-}))
-
-const validateCampground = (req,res,next) => {
-    const { error } = campgroundSchema.validate(req.body);
-    if(error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400);
-    } else {next()}
-}
-
 const validateReview = (req,res,next) => {
     const {error} = reviewSchema.validate(req.body);
     if(error) {
@@ -61,30 +44,7 @@ const validateReview = (req,res,next) => {
     } else {next()} 
 }
 
-app.post('/campgrounds', validateCampground, catchAsync(async (req,res, next) => {
-         // if(!req.body.campground) throw new ExpressError('Invalid Campground Data', 400);
-        const campground = new Campground(req.body.campground);
-        await campground.save();
-        res.redirect(`/campgrounds/${campground._id}`);
-})) 
-
-//route to for to edit existing campgrounds and update to database CR(Update)D 
-app.get('/campgrounds/:id/edit',  catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
-    res.render('campgrounds/edit', { campground });
-}))
-app.put('/campgrounds/:id', validateCampground, catchAsync(async (req,res, next) => {
-    const {id} = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, {...req.body.campground});
-    res.redirect(`/campgrounds/${campground._id}`);
-    next();
-}))
-
-app.delete('/campgrounds/:id', catchAsync( async (req,res) => {
-    const { id } = req.params;
-    await Campground.findByIdAndDelete(id);
-    res.redirect("/campgrounds");
-}))
+app.use('/campgrounds', campgrounds);
 
 //adding reviews to campgrounds
 app.post('/campgrounds/:id/reviews',validateReview, catchAsync(async(req,res) => {
@@ -110,7 +70,6 @@ app.get('/campgrounds/:id',  catchAsync( async(req, res) => {
     const campground = await Campground.findById(req.params.id).populate('reviews');
     res.render('campgrounds/show', {campground});
 }))
-
 
 //error handling
 app.all('*', (req,res, next) => {
