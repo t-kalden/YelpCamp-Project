@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError');
 const Campground = require('../models/campground')
 const { campgroundSchema } = require('../schemas');
+const reviews = require('../models/review');
 
 const validateCampground = (req,res,next) => {
     const { error } = campgroundSchema.validate(req.body);
@@ -47,6 +48,12 @@ router.delete('/:id', catchAsync( async (req,res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect("/campgrounds");
+}))
+
+//show page - showing details of campgrounds
+router.get('/:id',  catchAsync( async(req, res) => {
+    const campground = await Campground.findById(req.params.id).populate('reviews');
+    res.render('campgrounds/show', {campground});
 }))
 
 
