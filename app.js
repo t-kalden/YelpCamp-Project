@@ -7,11 +7,13 @@ const session = require('express-session')
 const flash = require('connect-flash');
 const ExpressError = require('./utils/ExpressError');
 const app = express();
-
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 
 const campgrounds = require('./routes/campgrounds');
 const reviews = require('./routes/reviews');
-
+const User = require('./models/user');
+const { authenticate } = require('passport/lib');
 mongoose.connect('mongodb://localhost:27017/yelp-camp');
 const db = mongoose.connection;
 db.on("err", console.error.bind(console, "CONNECTION ERROR: "));
@@ -19,12 +21,6 @@ db.once("open", () => {
     console.log("CONNECTED TO DATABASE");
 })
 
-app.use(express.urlencoded({ extended : true }));
-//calling method_override
-app.use(methodOverride('_method'));
-app.use(express.static(path.join(__dirname,'public')));
-//calling ejs-mate for boilerplate 
-app.engine('ejs', ejsMate);
 const sessionConfig = {
     secret:'Secret',
     resave:false,
@@ -35,14 +31,31 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }
+
+//calling ejs-mate for boilerplate 
+app.engine('ejs', ejsMate);
+
+app.use(express.urlencoded({ extended : true }));
+app.use(express.static(path.join(__dirname,'public')));
+app.use(methodOverride('_method')); //calling method_override
 app.use(session(sessionConfig));
 app.use(flash());
+//pasport
+app.use(passport.initialize()); // initilizing passport
+app.use(passport.session()); // initilizing passport session
+passport.use(new LocalStrategy(User.authenticate())); // authenticating user using passport
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
 
 app.get('/', (req,res) => {
     res.render('home');
 })
+
 
 app.use((req,res,next)=> {
     res.locals.success = req.flash('success');
@@ -52,6 +65,7 @@ app.use((req,res,next)=> {
 
 app.use('/campgrounds', campgrounds);
 app.use('/campgrounds/:id/reviews', reviews);
+
 
 //error handling
 app.all('*', (req,res, next) => {
