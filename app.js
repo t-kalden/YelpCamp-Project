@@ -10,9 +10,14 @@ const app = express();
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 
-const campgrounds = require('./routes/campgrounds');
-const reviews = require('./routes/reviews');
+//routes
+const campgroundsRoutes = require('./routes/campgrounds');
+const reviewsRoutes = require('./routes/reviews');
+const usersRoutes = require('./routes/users');
+
+//models
 const User = require('./models/user');
+
 const { authenticate } = require('passport/lib');
 mongoose.connect('mongodb://localhost:27017/yelp-camp');
 const db = mongoose.connection;
@@ -63,13 +68,15 @@ app.use((req,res,next)=> {
     next();
 })
 
-app.use('/campgrounds', campgrounds);
-app.use('/campgrounds/:id/reviews', reviews);
-
+//use routes
+app.use('/campgrounds', campgroundsRoutes);
+app.use('/campgrounds/:id/reviews', reviewsRoutes);
+app.use('/', usersRoutes);
 
 //error handling
 app.all('*', (req,res, next) => {
-    next(new ExpressError('Page Not Found', 404));
+    return next(new ExpressError('Page Not Found', 404));
+    res.send('404!!!');
 })
 app.use((err,req,res,next)=> {
     const { statusCode = 500 } = err;
