@@ -4,10 +4,13 @@
     <div class="col-6 offset-1">
       <!-- campground card -->
         <div class="card mb-3" >
-            <img src="<%= campground.image %>" class="card-img-top" alt="<%= campground.title %>">
+              <span class="card-text text-muted mb-2">Submitted by <%= campground.author.username %></span>
+            <img src="<%= campground.image %>" class="card-img-top" alt="<%= campground.title %>"> 
             <div class="card-body">
               <h5 class="card-title"><%= campground.title %></h5>
               <span class="card-text text-muted mb-2"><%= campground.location %></span>
+              <br>
+              <span class="card-text text-muted mb-2">Submitted by <%= campground.author.username %></span>
               <p class="card-text"><%= campground.description %></p>
             </div>
             <ul class="list-group list-group-flush">
