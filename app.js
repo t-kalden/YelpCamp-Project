@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
+ 
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -18,7 +22,7 @@ const usersRoutes = require('./routes/users');
 //models
 const User = require('./models/user');
 
-const { authenticate } = require('passport/lib');
+// const { authenticate } = require('passport/lib');
 mongoose.connect('mongodb://localhost:27017/yelp-camp');
 const db = mongoose.connection;
 db.on("err", console.error.bind(console, "CONNECTION ERROR: "));
