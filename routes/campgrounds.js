@@ -23,7 +23,7 @@ router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(campgrounds.renderEditF
 
 router.route('/:id') 
     //route for updating campground to database CR(Update)D 
-        .put(isLoggedIn, isAuthor, validateCampground, catchAsync(campgrounds.updateCampground))
+        .put(isLoggedIn, isAuthor, upload.array('image'),validateCampground, catchAsync(campgrounds.updateCampground))
     //route to delete campgrounds
         .delete(isLoggedIn, isAuthor, catchAsync(campgrounds.deleteCampground))
     //show page - showing details of campgrounds
