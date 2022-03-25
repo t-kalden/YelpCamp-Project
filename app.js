@@ -61,11 +61,6 @@ passport.deserializeUser(User.deserializeUser());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
 
-app.get('/', (req,res) => {
-    res.render('home');
-})
-
-
 app.use((req,res,next)=> {
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
@@ -77,6 +72,11 @@ app.use((req,res,next)=> {
 app.use('/campgrounds', campgroundsRoutes);
 app.use('/campgrounds/:id/reviews', reviewsRoutes);
 app.use('/', usersRoutes);
+
+
+app.get('/', (req,res) => {
+    res.render('home');
+})
 
 //error handling
 app.all('*', (req,res, next) => {
