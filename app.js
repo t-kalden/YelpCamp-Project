@@ -13,6 +13,7 @@ const ExpressError = require('./utils/ExpressError');
 const app = express();
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const mongoSanitize = require('express-mongo-sanitize');
 
 //routes
 const campgroundsRoutes = require('./routes/campgrounds');
@@ -47,8 +48,10 @@ app.engine('ejs', ejsMate);
 app.use(express.urlencoded({ extended : true }));
 app.use(express.static(path.join(__dirname,'public')));
 app.use(methodOverride('_method')); //calling method_override
+app.use(mongoSanitize());
 app.use(session(sessionConfig));
 app.use(flash());
+
 //pasport
 app.use(passport.initialize()); // initilizing passport
 app.use(passport.session()); // initilizing passport session
