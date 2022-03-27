@@ -32,6 +32,7 @@ db.once("open", () => {
 })
 
 const sessionConfig = {
+    name: 'session',
     secret:'Secret',
     resave:false,
     saveUninitalized: true,
