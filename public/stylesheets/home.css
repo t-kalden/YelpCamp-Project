@@ -34,3 +34,8 @@ main h1 {
 main strong {
     font-size: 3rem;
 }
+
+a.developer-tag {
+    color: white;
+    
+}
