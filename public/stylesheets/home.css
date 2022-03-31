@@ -1,7 +1,7 @@
 body {
     height: 100vh;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("https://images.pexels.com/photos/2422968/pexels-photo-2422968.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+    url("../images/pexels-photo-2422968.jpeg");
     background-size: cover;
     background-position: center;
     text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
